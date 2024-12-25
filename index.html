@@ -1,0 +1,40 @@
+<head>
+    <title>Toki Pona GIFs</title>
+</head>
+<body>
+    <h1>sitelen tawa pi kalama ala</h1>
+    <div id="gif-container"></div>
+
+    <script>
+        // Path to the folder containing GIFs
+        const gifFolder = "https://github.com/gugu256/tokiponagifs/gifs";
+
+        // Fetch the list of GIFs dynamically
+        fetch(gifFolder)
+            .then(response => {
+                if (response.ok) {
+                    return response.text();
+                }
+                throw new Error("Failed to load GIF folder");
+            })
+            .then(data => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(data, "text/html");
+                const gifContainer = document.getElementById("gif-container");
+
+                // Loop through all links in the directory listing and add images
+                doc.querySelectorAll("a").forEach(link => {
+                    const href = link.getAttribute("href");
+                    if (href.endsWith(".gif")) {
+                        const img = document.createElement("img");
+                        img.src = gifFolder + href;
+                        img.alt = href;
+                        img.style.margin = "10px";
+                        img.style.maxWidth = "200px"; // Adjust size if necessary
+                        gifContainer.appendChild(img);
+                    }
+                });
+            })
+            .catch(error => console.error(error));
+    </script>
+</body>
